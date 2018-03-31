@@ -16,7 +16,7 @@ router.post('/login', function (req, res, next) {
         response.on('data', function (data) {
           console.log(data);
           var jsonData = JSON.parse(data);
-          if (jsonData.errcode !== 0) {
+          if (jsonData.hasOwnProperty('errcode') && jsonData.errcode !== 0) {
             if (jsonData.errcode === 40029) {
               res.json({
                 error: {
