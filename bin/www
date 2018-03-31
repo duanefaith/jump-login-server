@@ -1,0 +1,139 @@
+#!/usr/bin/env node
+
+(function () {
+  function formatDate() {
+    var current = new Date();
+    return current.getFullYear() + '-' + current.getMonth() + '-' + current.getDate()
+      + ' ' + current.getHours() + ':' + current.getMinutes() + ':' + current.getSeconds() + ':' + current.getMilliseconds();
+  }
+
+  var oldLog = console.log;
+  console.log = function (msg) {
+    oldLog(formatDate() + ' ' + msg);
+  };
+
+  var oldWarn = console.warn;
+  console.warn = function (msg) {
+    oldWarn(formatDate() + ' ' + msg);
+  };
+
+  var oldInfo = console.info;
+  console.info = function (msg) {
+    oldInfo(formatDate() + ' ' + msg);
+  };
+
+  var oldError = console.error;
+  console.error = function (msg) {
+    oldError(formatDate() + ' ' + msg);
+  };
+
+  var oldAssert = console.assert;
+  console.assert = function (msg) {
+    oldAssert(formatDate() + ' ' + msg);
+  };
+}) ();
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('jumpo-login-server:server');
+var ConfigManager = require('../config_manager');
+var configs = ConfigManager.getInstance().getConfigs();
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3001');
+app.set('port', port);
+
+var options = null;
+if (configs.certs) {
+  options = {
+    key: ConfigManager.getInstance().readRelativeFileSync(configs.certs.key),
+    cert: ConfigManager.getInstance().readRelativeFileSync(configs.certs.cert)
+  };
+}
+
+/**
+ * Create HTTP server.
+ */
+
+var server;
+if (options) {
+  var https = require('https');
+  server = https.createServer(options, app);
+} else {
+  var http = require('http');
+  server = http.createServer(app);
+}
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
