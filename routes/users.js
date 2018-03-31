@@ -19,21 +19,21 @@ router.post('/login', function (req, res, next) {
           if (jsonData.errcode !== 0) {
             if (jsonData.errcode === 40029) {
               res.json({
-                user: {
+                error: {
                   code: 1,
                   msg: 'invalid code'
                 }
               });
             } else if (jsonData.errcode === -1) {
               res.json({
-                user: {
+                error: {
                   code: 1,
                   msg: 'server busy'
                 }
               });
             } else {
               res.json({
-                user: {
+                error: {
                   code: jsonData.errcode,
                   msg: jsonData.errMsg
                 }
@@ -41,7 +41,7 @@ router.post('/login', function (req, res, next) {
             }
           } else {
             res.json({
-              error: {
+              user: {
                 id: jsonData.openid,
                 token: jsonData.session_key
               }
@@ -50,7 +50,7 @@ router.post('/login', function (req, res, next) {
         });
       } else {
         res.json({
-          user: {
+          error: {
             code: 3,
             msg: 'network error, status = ' + response.statusCode
           }
@@ -58,7 +58,7 @@ router.post('/login', function (req, res, next) {
       }
     }).on('error', function (e) {
       res.json({
-        user: {
+        error: {
           code: 2,
           msg: JSON.stringify(e)
         }
