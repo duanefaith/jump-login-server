@@ -10,6 +10,7 @@
       "key": "certs/production/ca.key",
       "cert": "certs/production/3c20cfc256e0b8d6.crt"
     },
+    "port": 443,
     "wechat": {
       "app_id": "wx00ba5da12d217249",
       "app_secret": "47168b461e18fcccc426be3646a705d5"

@@ -46,9 +46,6 @@ var configs = ConfigManager.getInstance().getConfigs();
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3001');
-app.set('port', port);
-
 var options = null;
 if (configs.certs) {
   options = {
@@ -56,6 +53,14 @@ if (configs.certs) {
     cert: ConfigManager.getInstance().readRelativeFileSync(configs.certs.cert)
   };
 }
+
+var port;
+if (configs.port) {
+  port = configs.port;
+} else {
+  port = normalizePort(process.env.PORT || '3001');
+}
+app.set('port', port);
 
 /**
  * Create HTTP server.
