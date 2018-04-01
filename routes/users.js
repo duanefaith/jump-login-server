@@ -102,6 +102,11 @@ function getRank (score) {
   }
 };
 
+router.post('*', function (req, res, next) {
+  console.log('req.body = ' + JSON.stringify(req.body));
+  next();
+});
+
 router.post('/login', function (req, res, next) {
   if (req.body && req.body.code) {
     var url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' + configs.wechat.app_id +
