@@ -3,7 +3,8 @@
     "wechat": {
       "app_id": "wx00ba5da12d217249",
       "app_secret": "47168b461e18fcccc426be3646a705d5"
-    }
+    },
+    "db": "mysql://root@localhost/jumpo"
   },
   "production": {
     "certs": {
@@ -14,6 +15,7 @@
     "wechat": {
       "app_id": "wx00ba5da12d217249",
       "app_secret": "47168b461e18fcccc426be3646a705d5"
-    }
+    },
+    "db": "mysql://root@localhost/jumpo"
   }
 }
