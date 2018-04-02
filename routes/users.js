@@ -65,12 +65,26 @@ function updateScoreItem(scoreItem) {
       }
     }
   } else {
-    if (newPos == -1 || oldPos == newPos) {
-      // do nothing
+    if (newPos == -1) {
+      leaderboardCache.splice(oldPos, 1);
+      leaderboardCache.push(scoreItem);
+      newPos = leaderboardCache.length - 1;
+      for (var i = oldPos; i < newPos; i ++) {
+        leaderboardCache[i].rank = i + 1;
+      }
+    } else if ( oldPos == newPos) {
+      leaderboardCache[newPos] = scoreItem;
     } else if (oldPos > newPos) {
       leaderboardCache.splice(oldPos, 1);
       leaderboardCache.splice(newPos, 0, scoreItem);
       for (var i = newPos + 1; i < oldPos + 1; i ++) {
+        leaderboardCache[i].rank = i + 1;
+      }
+    } else {
+      leaderboardCache.splice(oldPos, 1);
+      newPos = newPos - 1;
+      leaderboardCache.splice(newPos, 0, scoreItem);
+      for (var i = oldPos; i < newPos; i ++) {
         leaderboardCache[i].rank = i + 1;
       }
     }
