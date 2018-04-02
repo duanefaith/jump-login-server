@@ -5,6 +5,15 @@ var configs = ConfigManager.getInstance().getConfigs();
 var https = require('https');
 var DBManager = require('../db_manager');
 
+var lineReader = require('readline').createInterface({
+  input: require('fs').createReadStream(require('path').resolve(__dirname, '../names'))
+});
+
+var names = [];
+lineReader.on('line', function (line) {
+  names.push(line);
+});
+
 var leaderboardCache = [];
 
 function refreshCache() {
@@ -183,6 +192,11 @@ router.post('/score/update', function (req, res, next) {
     var score = req.body.score;
     var player = req.body.player;
     if (player.hasOwnProperty('id') && player.hasOwnProperty('type')) {
+      if (player.type == 'web') {
+        if (!player.name) {
+          player.name = names[Math.floor(Math.random() * names.length)];
+        }
+      }
       var scoreItem = updateScoreItem({score: score, player: player});
       DBManager.getInstance().getDB().user.upsert({
         openid: scoreItem.player.id,
