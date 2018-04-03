@@ -65,6 +65,16 @@ function updateScoreItem(scoreItem) {
       }
     }
   } else {
+    if (!scoreItem.name) {
+      if (leaderboardCache[oldPos].name) {
+        scoreItem.name = leaderboardCache[oldPos].name;
+      }
+    }
+    if (!scoreItem.photo) {
+      if (leaderboardCache[oldPos].photo) {
+        scoreItem.photo = leaderboardCache[oldPos].photo;
+      }
+    }
     if (newPos == -1) {
       leaderboardCache.splice(oldPos, 1);
       leaderboardCache.push(scoreItem);
